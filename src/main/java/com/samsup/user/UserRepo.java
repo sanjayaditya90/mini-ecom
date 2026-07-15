@@ -17,7 +17,7 @@ public class UserRepo {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/9th_march_2026", "root",
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/e_commerce", "root",
 					"strong@15104961");
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -27,8 +27,8 @@ public class UserRepo {
 	public boolean saveUser(User user) throws FailedToCreateUserException {
 
 		String saveUserSql = "INSERT INTO customer "
-				+ "(user_name, password, first_name, last_name, email, phone_no, age, create_date, created_by, modified_date, modified_by) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "(user_name, password, first_name, last_name, email, phone_no, age, created_date, created_by, modified_date, modified_by, user_type, address) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement ps = connection.prepareStatement(saveUserSql)) {
 
@@ -45,6 +45,8 @@ public class UserRepo {
 
 			ps.setDate(10, java.sql.Date.valueOf(user.getModifiedDate()));
 			ps.setString(11, user.getModifiedBy());
+			ps.setInt(12, user.getUserType());
+			ps.setString(13, user.getAddress());
 
 			int rows = ps.executeUpdate();
 
@@ -59,48 +61,54 @@ public class UserRepo {
 			return true;
 
 		} catch (SQLException e) {
-			throw new FailedToCreateUserException("Failed to create user.", e);
+			throw new FailedToCreateUserException("Failed to create user." + e);
 		}
 	}
 
-	public User doValidateLogin(String userName, String password) throws SQLException, FailedToGetUserException {
+	public User doValidateLogin(String userName, String password, int userType)
+			throws SQLException, FailedToGetUserException {
 
-		String loginQuery = "Select * from customer where user_id = ? and password = ?";
+		String loginQuery = "Select * from customer where user_name = ? and password = ? and user_type = ?";
 
 		try (PreparedStatement ps = connection.prepareStatement(loginQuery)) {
 			ps.setString(1, userName);
 			ps.setString(2, password);
+			ps.setInt(3, userType);
 
 			ResultSet rs = ps.executeQuery();
-			User user = new User();
-			while (rs != null && rs.next()) {
-				user.setUserId("user_name");
-				user.setPassword("password");
+			User user = null;
+			if (rs.next()) {
+
+				user = new User();
+				user.setUserName(rs.getString("user_name"));
+				user.setPassword(rs.getString("password"));
+				user.setUserType(rs.getInt("user_type"));
 				user.setFirstName(rs.getString("first_name"));
 				user.setLastName(rs.getString("last_name"));
-				user.setUserName(rs.getString("user_id"));
+				user.setUserId(rs.getString("user_id"));
 				user.setPhoneNo(rs.getString("phone_no"));
 				user.setAddress(rs.getString("address"));
 				user.setEmail(rs.getString("email"));
 				user.setAge(rs.getInt("age"));
 				user.setCreatedBy(rs.getString("created_by"));
-				user.setCreateDate(rs.getDate("create_date").toLocalDate());
+				user.setCreateDate(rs.getDate("created_date").toLocalDate());
 				user.setModifiedBy("modified_by");
 				user.setModifiedDate(rs.getDate("modified_date").toLocalDate());
 			}
 			return user;
 
 		} catch (SQLException e) {
-			throw new FailedToGetUserException("Failed to retrieve user.", e);
+			throw new FailedToGetUserException("Failed to retrieve user." + e);
 		}
 	}
 
-	public boolean isUserNameExists(String userName) {
-		String sql = "SELECT COUNT(*) FROM customer WHERE user_name = ?";
+	public boolean isUserNameExists(String userName, int userType) {
+		String sql = "SELECT COUNT(*) FROM customer WHERE user_name = ? and user_type = ?";
 
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
 			ps.setString(1, userName);
+			ps.setInt(2, userType);
 
 			ResultSet rs = ps.executeQuery();
 
@@ -109,7 +117,28 @@ public class UserRepo {
 			}
 
 		} catch (SQLException e) {
-			
+
+		}
+
+		return false;
+	}
+
+	public boolean isUserEmailExists(String email, int userType) {
+		String sql = "SELECT COUNT(*) FROM customer WHERE email = ? and user_type = ?";
+
+		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+			ps.setString(1, email);
+			ps.setInt(2, userType);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt(1) > 0;
+			}
+
+		} catch (SQLException e) {
+
 		}
 
 		return false;
