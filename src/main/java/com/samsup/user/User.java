@@ -12,7 +12,7 @@ public class User {
 	private String email;
 	private String phoneNo;
 	private String address;
-	private String age;
+	private int age;
 	private LocalDate createDate;
 	private String createdBy;
 	private String modifiedBy;
@@ -82,11 +82,11 @@ public class User {
 		this.address = address;
 	}
 
-	public String getAge() {
+	public int getAge() {
 		return age;
 	}
 
-	public void setAge(String age) {
+	public void setAge(int age) {
 		this.age = age;
 	}
 
@@ -122,7 +122,4 @@ public class User {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public void login(String userId, String password) {
-
-	}
 }

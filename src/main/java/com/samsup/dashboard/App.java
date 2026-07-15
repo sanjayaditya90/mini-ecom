@@ -1,4 +1,4 @@
-package com.samsup.user;
+package com.samsup.dashboard;
 
 public class App 
 {
