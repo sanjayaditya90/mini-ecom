@@ -6,9 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.samsup.exception.FailedToCreateUserException;
-import com.samsup.exception.FailedToGetUserException;
-
 public class UserRepo {
 	public PreparedStatement ps;
 	public Connection connection;

@@ -6,8 +6,7 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 import com.samsup.dashboard.AppSession;
-import com.samsup.exception.FailedToAddProductException;
-import com.samsup.exception.FailedToCreateUserException;
+import com.samsup.user.FailedToCreateUserException;
 import com.samsup.user.User;
 
 public class ProductService {

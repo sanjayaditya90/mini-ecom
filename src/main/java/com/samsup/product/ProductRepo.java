@@ -12,8 +12,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import com.samsup.dashboard.AppSession;
-import com.samsup.exception.FailedToAddProductException;
-import com.samsup.exception.ProductUploadException;
 import com.samsup.user.User;
 
 public class ProductRepo {

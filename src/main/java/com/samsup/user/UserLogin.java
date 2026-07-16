@@ -1,16 +1,16 @@
 package com.samsup.user;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Scanner;
-
-import com.samsup.exception.FailedToCreateUserException;
-import com.samsup.exception.FailedToGetUserException;
-import com.samsup.exception.UserNotFoundException;
 
 public class UserLogin {
 	Scanner sc = new Scanner(System.in);
 
+	public User registerUser() throws FailedToCreateUserException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public User registerUser(int userType) throws FailedToCreateUserException {
 		// User Input
 		UserRepo userRepo = new UserRepo();
@@ -105,8 +105,12 @@ public class UserLogin {
 		return new User();
 	}
 
-	public User login(int userType) throws SQLException, Exception {
-
+	public User login() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public User login(int userType) throws Exception {
 		System.out.print("Enter your User name: ");
 		String userName = sc.nextLine();
 
@@ -120,4 +124,5 @@ public class UserLogin {
 		}
 		return user;
 	}
+
 }
