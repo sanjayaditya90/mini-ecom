@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CartRepo {
 	public PreparedStatement ps;
@@ -102,5 +105,38 @@ public class CartRepo {
 
 		rs.close();
 		ps.close();
+	}
+	public List<Cart> getCartItems(String customerId) throws SQLException {
+
+	    String query = "SELECT * FROM cart WHERE customer_id = ?";
+
+	    List<Cart> cartList = new ArrayList<>();
+
+	    PreparedStatement ps = connection.prepareStatement(query);
+	    ps.setString(1, customerId);
+
+	    ResultSet rs = ps.executeQuery();
+
+	    while (rs.next()) {
+
+	        Cart cart = new Cart();
+
+	        cart.setCartId(rs.getInt("cart_id"));
+	        cart.setCustomerId(rs.getString("customer_id"));
+	        cart.setProductId(rs.getInt("product_id"));
+	        cart.setProductName(rs.getString("product_name"));
+	        cart.setProductPrice(rs.getDouble("product_price"));
+	        cart.setQuantity(rs.getInt("quantity"));
+	        cart.setTotalPrice(rs.getDouble("total_price"));
+	        cart.setResellerId(rs.getString("reseller_id"));
+	        cart.setResellerName(rs.getString("reseller_name"));
+
+	        cartList.add(cart);
+	    }
+
+	    rs.close();
+	    ps.close();
+
+	    return cartList;
 	}
 }

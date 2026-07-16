@@ -1,6 +1,7 @@
 package com.ecom.dashboard;
 
 import java.util.Scanner;
+import com.ecom.order.OrderService;
 
 import com.ecom.Util.Utility;
 import com.ecom.cart.CartService;
@@ -60,13 +61,19 @@ public class CustomerDashboard implements ProductDashboard {
 
                 case "5":
                     if (utility.ensureLoggedIn(UserType.CUSTOMER)) {
-                        System.out.println("Place Order Logic");
+
+                        OrderService orderService = new OrderService();
+                        orderService.placeOrder();
+
                     }
                     break;
 
                 case "6":
                     if (utility.ensureLoggedIn(UserType.CUSTOMER)) {
-                        System.out.println("My Orders Logic");
+
+                        OrderService orderService = new OrderService();
+                        orderService.showMyOrders();
+
                     }
                     break;
 

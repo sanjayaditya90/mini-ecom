@@ -42,3 +42,23 @@ CREATE TABLE cart (
     reseller_name VARCHAR(255),
     added_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(100) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    order_status VARCHAR(20) NOT NULL,
+    created_date DATE NOT NULL,
+    created_by VARCHAR(50) NOT NULL,
+    modified_date DATE,
+    modified_by VARCHAR(50)
+);
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
+);
