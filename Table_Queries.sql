@@ -28,3 +28,17 @@ CREATE TABLE product (
     modified_date DATE,
     modified_by VARCHAR(50)
 );
+
+
+CREATE TABLE cart (
+    cart_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id VARCHAR(100) NOT NULL,
+    product_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    total_price DECIMAL(10,2) NOT NULL,
+    reseller_id VARCHAR(100),
+    reseller_name VARCHAR(255),
+    added_date DATETIME DEFAULT CURRENT_TIMESTAMP
+);
