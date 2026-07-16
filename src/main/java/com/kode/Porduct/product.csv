@@ -1,0 +1,21 @@
+id,name,category,price,stock,brand
+1,iPhone 16,Mobile,80000,15,Apple
+2,Galaxy S25,Mobile,75000,12,Samsung
+3,OnePlus 13,Mobile,55000,20,OnePlus
+4,MacBook Air M3,Laptop,115000,8,Apple
+5,Dell Inspiron 15,Laptop,65000,10,Dell
+6,HP Pavilion,Laptop,62000,9,HP
+7,Sony WH-1000XM5,Headphones,28000,18,Sony
+8,Boat Rockerz 550,Headphones,1999,40,Boat
+9,Logitech MX Master 3S,Mouse,8500,25,Logitech
+10,HP Wireless Mouse,Mouse,1200,50,HP
+11,Mechanical Keyboard,Keyboard,4500,30,Redragon
+12,Samsung 27 Inch Monitor,Monitor,18000,14,Samsung
+13,Canon Pixma G3010,Printer,15500,7,Canon
+14,Apple Watch Series 10,Smartwatch,45000,11,Apple
+15,Noise ColorFit Pro,Smartwatch,3500,35,Noise
+16,Mi Power Bank 20000mAh,Accessories,2200,45,Xiaomi
+17,SanDisk 128GB Pendrive,Storage,999,60,SanDisk
+18,Seagate 1TB HDD,Storage,4200,22,Seagate
+19,JBL Flip 6 Speaker,Speaker,9500,16,JBL
+20,Canon EOS 200D Camera,Camera,52000,6,Canon
