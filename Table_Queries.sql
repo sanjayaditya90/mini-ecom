@@ -14,3 +14,17 @@ CREATE TABLE customer (
     modified_date DATE,
     modified_by VARCHAR(50)
 );
+
+CREATE TABLE product (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    product_description VARCHAR(500),
+    category VARCHAR(50) NOT NULL,
+    brand VARCHAR(50),
+    price DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL,
+    created_date DATE NOT NULL,
+    created_by VARCHAR(50) NOT NULL,
+    modified_date DATE,
+    modified_by VARCHAR(50)
+);
