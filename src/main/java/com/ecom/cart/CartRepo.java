@@ -103,6 +103,7 @@ public class CartRepo {
 
 	    List<Cart> cartList = new ArrayList<>();
 
+	    Connection connection = DBConnection.getConnection();
 	    PreparedStatement ps = connection.prepareStatement(query);
 	    ps.setString(1, customerId);
 
