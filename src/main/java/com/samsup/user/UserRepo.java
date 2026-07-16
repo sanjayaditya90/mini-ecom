@@ -89,7 +89,7 @@ public class UserRepo {
 				user.setAge(rs.getInt("age"));
 				user.setCreatedBy(rs.getString("created_by"));
 				user.setCreateDate(rs.getDate("created_date").toLocalDate());
-				user.setModifiedBy("modified_by");
+				user.setModifiedBy(rs.getString("modified_by"));
 				user.setModifiedDate(rs.getDate("modified_date").toLocalDate());
 			}
 			return user;

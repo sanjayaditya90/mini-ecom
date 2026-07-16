@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-import com.samsup.dashboard.AppSession;
+import com.samsup.app.AppSession;
 import com.samsup.user.FailedToCreateUserException;
 import com.samsup.user.User;
 
@@ -83,8 +83,47 @@ public class ProductService {
 
 	}
 
-	public Product updateProducts() throws SQLException {
+	public Product getProducts() throws SQLException, Exception {
+		Scanner sc = new Scanner(System.in);
+
 		productRepo.showAllProduct();
-		return null;
+
+		System.out.print("\nEnter Product ID to edit: ");
+		int productId = Integer.parseInt(sc.nextLine());
+
+		if (productId == 0) {
+			throw new ProductNotFoundException("Product with id 0 is not available. Try Again!!");
+		}
+
+		return productRepo.getProductById(productId);
 	}
+
+	public Product showProduct() throws SQLException, Exception {
+		Product product = getProducts();
+
+		if (product == null) {
+			System.out.println("Invalid Product Id");
+			return null;
+		}
+
+		System.out.println("\nSelected Product");
+		System.out.println("---------------------------");
+		System.out.println("1. Name        : " + product.getProductName());
+		System.out.println("2. Description : " + product.getProductDescription());
+		System.out.println("3. Category    : " + product.getCategory());
+		System.out.println("4. Brand       : " + product.getBrand());
+		System.out.println("5. Price       : " + product.getPrice());
+		System.out.println("6. Quantity    : " + product.getQuantity());
+
+		UpdateProduct updateProduct = new UpdateProduct();
+		product = updateProduct.showProductDetails(product);
+		
+		productRepo.updateProduct(product, appSession);
+		return product;
+	}
+
+	public void getAllProduct() throws SQLException {
+		productRepo.showAllProduct();
+	}
+
 }

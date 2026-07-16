@@ -2,6 +2,7 @@ package com.samsup.dashboard;
 
 import java.util.Scanner;
 
+import com.samsup.app.AppSession;
 import com.samsup.customer.CustomerLogin;
 import com.samsup.reseller.ResellerLogin;
 import com.samsup.user.User;
@@ -10,19 +11,21 @@ import com.samsup.user.UserNotFoundException;
 import com.samsup.user.UserType;
 
 public class LoginDashboard {
-  public void loginPage() {
-	  Scanner sc = new Scanner(System.in);
 
-		UserLogin userLogin = new UserLogin();
+	public void loginPage() {
+
+		Scanner sc = new Scanner(System.in);
+
 		UserLogin customerLogin = new CustomerLogin();
 		UserLogin resellerLogin = new ResellerLogin();
 		AppSession appSession = new AppSession();
+		MainDashboard mainDashboard = new MainDashboard();
 
 		boolean exitMenu = false;
 
 		while (!exitMenu) {
 
-			System.out.println("\n========== LOGIN ==========");
+			System.out.println("\n========== LOGIN PAGE==========");
 			System.out.println("1. Customer Login");
 			System.out.println("2. Register Customer");
 			System.out.println("3. Reseller Login");
@@ -38,29 +41,30 @@ public class LoginDashboard {
 
 				case "1":
 					try {
-						User customer = customerLogin.login(UserType.CUSTOMER);
-
+						User customer = customerLogin.login();
 						appSession.setLoggedInUser(customer);
-						System.out.println("Welcome " + customer.getUserName());
+
+						System.out.println("Welcome " + customer.getFirstName());
+						loadDashboard(customer);
 
 					} catch (UserNotFoundException e) {
 
 						System.out.println(e.getMessage());
-						System.out.println("Redirecting to registration...");
-
-						User customer = customerLogin.registerUser();
-						appSession.setLoggedInUser(customer);
-
-						System.out.println("Welcome " + customer.getUserName());
+						System.out.println("Redirecting to Login Page...");
+						LoginDashboard loginDashboard = new LoginDashboard();
+						loginDashboard.loginPage();
 					}
+
 					exitMenu = true;
 					break;
 
 				case "2":
 					User newCustomer = customerLogin.registerUser(UserType.CUSTOMER);
 					appSession.setLoggedInUser(newCustomer);
+
 					System.out.println("Customer Registered Successfully.");
-					System.out.println("Welcome " + newCustomer.getUserName());
+					System.out.println("Welcome " + newCustomer.getFirstName());
+					loadDashboard(newCustomer);
 					exitMenu = true;
 					break;
 
@@ -68,15 +72,13 @@ public class LoginDashboard {
 					try {
 						User resellerUser = resellerLogin.login(UserType.RESELLER);
 						appSession.setLoggedInUser(resellerUser);
-						System.out.println("Welcome " + resellerUser.getUserName());
+						System.out.println("Welcome " + resellerUser.getFirstName());
+						loadDashboard(resellerUser);
 					} catch (UserNotFoundException e) {
 						System.out.println(e.getMessage());
-						System.out.println("Redirecting to registration...");
-
-						User resellerUser = resellerLogin.registerUser(UserType.RESELLER);
-						appSession.setLoggedInUser(resellerUser);
-
-						System.out.println("Welcome " + resellerUser.getUserName());
+						System.out.println("Redirecting to Login Page...");
+						LoginDashboard loginDashboard = new LoginDashboard();
+						loginDashboard.loginPage();
 					}
 					exitMenu = true;
 					break;
@@ -85,21 +87,36 @@ public class LoginDashboard {
 					User newReseller = resellerLogin.registerUser(UserType.RESELLER);
 					appSession.setLoggedInUser(newReseller);
 					System.out.println("Reseller Registered Successfully.");
-					System.out.println("Welcome " + newReseller.getUserName());
+					System.out.println("Welcome " + newReseller.getFirstName());
+					loadDashboard(newReseller);
 					exitMenu = true;
 					break;
 
 				case "5":
-					System.out.println("Thank you for using the application.");
-					return; 
-					
+					System.out.println("Returning to Main Dashboard...");
+					return;
+
 				default:
 					System.out.println("Invalid option. Please try again.");
 				}
+				
+				System.out.println("\nPress Enter to continue...");
+				sc.nextLine();
 
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		}
-  }
+	}
+	
+	private void loadDashboard(User user) {
+
+	    if (user.getUserType() == UserType.CUSTOMER) {
+	        new CustomerDashboard().listMenu();
+	    } else if (user.getUserType() == UserType.RESELLER) {
+	        new ResellerDashboard().listMenu();
+	    } else {
+	        System.out.println("Invalid user type.");
+	    }
+	}
 }

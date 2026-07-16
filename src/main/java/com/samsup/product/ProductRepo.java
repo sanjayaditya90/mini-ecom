@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import com.samsup.dashboard.AppSession;
+import com.samsup.app.AppSession;
 import com.samsup.user.User;
 
 public class ProductRepo {
@@ -129,5 +129,57 @@ public class ProductRepo {
 			}
 		}
 
+	}
+
+	public Product getProductById(int productId) throws SQLException {
+
+	    String sql = "SELECT * FROM product WHERE product_id=?";
+
+	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+	        ps.setInt(1, productId);
+
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+
+	            Product product = new Product();
+
+	            product.setProductId(rs.getInt("product_id"));
+	            product.setProductName(rs.getString("product_name"));
+	            product.setProductDescription(rs.getString("product_description"));
+	            product.setCategory(rs.getString("category"));
+	            product.setBrand(rs.getString("brand"));
+	            product.setPrice(rs.getDouble("price"));
+	            product.setQuantity(rs.getInt("quantity"));
+	            product.setCreatedBy(rs.getString("created_by"));
+	            product.setCreatedDate(rs.getDate("created_date").toLocalDate());
+	            product.setModifiedBy(rs.getString("modified_by"));
+	            product.setModifiedDate(rs.getDate("modified_date").toLocalDate());
+	            return product;
+	        }
+	    }
+
+	    return null;
+	}
+	
+	public boolean updateProduct(Product product, AppSession appSession) throws SQLException {
+
+	    String sql =
+	        "UPDATE product SET product_name=?,product_description=?,category=?,brand=?,price=?,quantity=?,modified_date=?,modified_by=? WHERE product_id=?";
+
+	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+	        ps.setString(1, product.getProductName());
+	        ps.setString(2, product.getProductDescription());
+	        ps.setString(3, product.getCategory());
+	        ps.setString(4, product.getBrand());
+	        ps.setDouble(5, product.getPrice());
+	        ps.setInt(6, product.getQuantity());
+	        ps.setDate(7, java.sql.Date.valueOf(LocalDate.now()));
+			ps.setString(8, appSession.getLoggedInUser().getCreatedBy());
+			ps.setInt(9, product.getProductId());
+	        return ps.executeUpdate() > 0;
+	    }
 	}
 }

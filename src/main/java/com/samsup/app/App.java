@@ -1,12 +1,13 @@
-package com.samsup.dashboard;
+package com.samsup.app;
 
+import com.samsup.dashboard.MainDashboard;
 import com.samsup.user.User;
 
 public class App 
 {
     public static void main( String[] args )
     {
-       AppDashboard appDashboard = new AppDashboard();
+       MainDashboard appDashboard = new MainDashboard();
        appDashboard.dashboardPage();
     }
 }
