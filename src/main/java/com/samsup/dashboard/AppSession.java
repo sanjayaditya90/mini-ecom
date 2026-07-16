@@ -3,21 +3,21 @@ package com.samsup.dashboard;
 import com.samsup.user.User;
 
 public class AppSession {
-	private User loggedInUser;
+	private static User loggedInUser;
 	
 	public User getLoggedInUser() {
         return loggedInUser;
     }
 
-    public void setLoggedInUser(User user) {
+    public static void setLoggedInUser(User user) {
         loggedInUser = user;
     }
 
-    public void logout() {
+    public static void logout() {
         loggedInUser = null;
     }
 
-    public boolean isLoggedIn() {
+    public static boolean isLoggedIn() {
         return loggedInUser != null;
     }
 }
