@@ -6,20 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.ecom.Util.DBConnection;
+
 public class UserRepo {
-	public PreparedStatement ps;
-	public Connection connection;
-
-	{
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/e_commerce", "root",
-					"strong@15104961");
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public boolean saveUser(User user) throws FailedToCreateUserException {
 
@@ -27,7 +16,8 @@ public class UserRepo {
 				+ "(user_name, password, first_name, last_name, email, phone_no, age, created_date, created_by, modified_date, modified_by, user_type, address) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (PreparedStatement ps = connection.prepareStatement(saveUserSql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(saveUserSql)) {
 
 			ps.setString(1, user.getUserName());
 			ps.setString(2, user.getPassword());
@@ -67,7 +57,8 @@ public class UserRepo {
 
 		String loginQuery = "Select * from customer where user_name = ? and password = ? and user_type = ?";
 
-		try (PreparedStatement ps = connection.prepareStatement(loginQuery)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(loginQuery)) {
 			ps.setString(1, userName);
 			ps.setString(2, password);
 			ps.setInt(3, userType);
@@ -102,7 +93,8 @@ public class UserRepo {
 	public boolean isUserNameExists(String userName, int userType) {
 		String sql = "SELECT COUNT(*) FROM customer WHERE user_name = ? and user_type = ?";
 
-		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
 
 			ps.setString(1, userName);
 			ps.setInt(2, userType);
@@ -123,7 +115,8 @@ public class UserRepo {
 	public boolean isUserEmailExists(String email, int userType) {
 		String sql = "SELECT COUNT(*) FROM customer WHERE email = ? and user_type = ?";
 
-		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
 
 			ps.setString(1, email);
 			ps.setInt(2, userType);

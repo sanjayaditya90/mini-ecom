@@ -9,31 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import com.ecom.Util.DBConnection;
+
 public class CartRepo {
-	public PreparedStatement ps;
-	public Connection connection;
-
-	{
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/e_commerce", "root",
-					"strong@15104961");
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void addItem(Cart cart) throws SQLException {
-
-		connection.setAutoCommit(false);
 
 		String query = "INSERT INTO cart "
 				+ "(customer_id, product_id, product_name, product_price, quantity, total_price, reseller_id, reseller_name) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (PreparedStatement ps = connection.prepareStatement(query)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
 
+			connection.setAutoCommit(false);
+			
 			double totalPrice = (cart.getProductPrice() * cart.getQuantity());
 			ps.setString(1, cart.getCustomerId());
 			ps.setInt(2, cart.getProductId());
@@ -56,7 +45,8 @@ public class CartRepo {
 	public void removeItem(int productId, String customerId) throws SQLException {
 
 		String query = "DELETE FROM cart WHERE product_id = ? and customer_id = ?";
-		try (PreparedStatement ps = connection.prepareStatement(query)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setInt(1, productId);
 			ps.setString(2, customerId);
 
@@ -74,6 +64,7 @@ public class CartRepo {
 	public void getcartItems(String customerId) throws SQLException {
 		String query = "SELECT * FROM cart WHERE customer_id = ?"; // assuming products table is named 'products'
 
+		Connection connection = DBConnection.getConnection();
 		PreparedStatement ps = connection.prepareStatement(query);
 		ps.setString(1, customerId);
 		ResultSet rs = ps.executeQuery();

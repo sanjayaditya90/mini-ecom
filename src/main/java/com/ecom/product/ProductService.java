@@ -86,7 +86,7 @@ public class ProductService {
 	public Product getProducts() throws SQLException, Exception {
 		Scanner sc = new Scanner(System.in);
 
-		productRepo.showAllProduct();
+		productRepo.showAllProduct(); 
 
 		System.out.print("\nEnter Product ID to edit: ");
 		int productId = Integer.parseInt(sc.nextLine());

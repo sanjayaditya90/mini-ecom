@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import com.ecom.Util.DBConnection;
 import com.ecom.app.AppSession;
 import com.ecom.user.User;
 
@@ -18,21 +19,11 @@ public class ProductRepo {
 	public PreparedStatement ps;
 	public Connection connection;
 
-	{
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/e_commerce", "root",
-					"strong@15104961");
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void saveProduct(AppSession appSession, String filePath) throws Exception {
 		String sql = " INSERT INTO product (product_name, product_description, category, brand, price, quantity, created_date, created_by, modified_date, modified_by) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
-		try (PreparedStatement ps = connection.prepareStatement(sql);
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql);
 				BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
 			String line;
@@ -83,7 +74,8 @@ public class ProductRepo {
 
 		String sql = " INSERT INTO product (product_name, product_description, category, brand, price, quantity, created_date, created_by, modified_date, modified_by) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
-		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
 
 			ps.setString(1, product.getProductName());
 			ps.setString(2, product.getProductDescription());
@@ -111,75 +103,81 @@ public class ProductRepo {
 
 	public void showAllProduct() throws SQLException {
 
-		String sql = " SELECT * FROM product ";
+		String sql = "SELECT * FROM product";
 
-		try (PreparedStatement ps = connection.prepareStatement(sql)) {
-			ResultSet rs = ps.executeQuery();
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery()) {
 
 			System.out.println(
-					"------------------------------------------------------------------------------------------------------------");
-			System.out.printf("%-5s %-20s %-18s %-15s %-15s %-10s %-10s%n", "ID", "Product Name", "Category", "Brand",
-					"Price", "Stock", "Description");
+					"+-----+-------------------------+---------------+----------------------+-----------+-------+------------------------------------------------------------+");
+			System.out.printf("| %-3s | %-23s | %-13s | %-20s | %-9s | %-5s | %-58s |%n", "ID", "Product Name",
+					"Category", "Brand", "Price", "Stock", "Description");
 			System.out.println(
-					"------------------------------------------------------------------------------------------------------------");
+					"+-----+-------------------------+---------------+----------------------+-----------+-------+------------------------------------------------------------+");
+
 			while (rs.next()) {
-				System.out.printf("%-5d %-20s %-18s %-15s %-10.2f %-10d %-10s%n", rs.getInt("product_id"),
+
+				System.out.printf("| %-3d | %-23s | %-13s | %-20s | %9.2f | %5d | %-58s |%n", rs.getInt("product_id"),
 						rs.getString("product_name"), rs.getString("category"), rs.getString("brand"),
 						rs.getDouble("price"), rs.getInt("quantity"), rs.getString("product_description"));
 			}
-		}
 
+			System.out.println(
+					"+-----+-------------------------+---------------+----------------------+-----------+-------+------------------------------------------------------------+");
+		}
 	}
 
 	public Product getProductById(int productId) throws SQLException {
 
-	    String sql = "SELECT * FROM product WHERE product_id=?";
+		String sql = "SELECT * FROM product WHERE product_id=?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
 
-	        ps.setInt(1, productId);
+			ps.setInt(1, productId);
 
-	        ResultSet rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-	        if (rs.next()) {
+			if (rs.next()) {
 
-	            Product product = new Product();
+				Product product = new Product();
 
-	            product.setProductId(rs.getInt("product_id"));
-	            product.setProductName(rs.getString("product_name"));
-	            product.setProductDescription(rs.getString("product_description"));
-	            product.setCategory(rs.getString("category"));
-	            product.setBrand(rs.getString("brand"));
-	            product.setPrice(rs.getDouble("price"));
-	            product.setQuantity(rs.getInt("quantity"));
-	            product.setCreatedBy(rs.getString("created_by"));
-	            product.setCreatedDate(rs.getDate("created_date").toLocalDate());
-	            product.setModifiedBy(rs.getString("modified_by"));
-	            product.setModifiedDate(rs.getDate("modified_date").toLocalDate());
-	            return product;
-	        }
-	    }
+				product.setProductId(rs.getInt("product_id"));
+				product.setProductName(rs.getString("product_name"));
+				product.setProductDescription(rs.getString("product_description"));
+				product.setCategory(rs.getString("category"));
+				product.setBrand(rs.getString("brand"));
+				product.setPrice(rs.getDouble("price"));
+				product.setQuantity(rs.getInt("quantity"));
+				product.setCreatedBy(rs.getString("created_by"));
+				product.setCreatedDate(rs.getDate("created_date").toLocalDate());
+				product.setModifiedBy(rs.getString("modified_by"));
+				product.setModifiedDate(rs.getDate("modified_date").toLocalDate());
+				return product;
+			}
+		}
 
-	    return null;
+		return null;
 	}
-	
+
 	public boolean updateProduct(Product product, AppSession appSession) throws SQLException {
 
-	    String sql =
-	        "UPDATE product SET product_name=?,product_description=?,category=?,brand=?,price=?,quantity=?,modified_date=?,modified_by=? WHERE product_id=?";
+		String sql = "UPDATE product SET product_name=?,product_description=?,category=?,brand=?,price=?,quantity=?,modified_date=?,modified_by=? WHERE product_id=?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
 
-	        ps.setString(1, product.getProductName());
-	        ps.setString(2, product.getProductDescription());
-	        ps.setString(3, product.getCategory());
-	        ps.setString(4, product.getBrand());
-	        ps.setDouble(5, product.getPrice());
-	        ps.setInt(6, product.getQuantity());
-	        ps.setDate(7, java.sql.Date.valueOf(LocalDate.now()));
+			ps.setString(1, product.getProductName());
+			ps.setString(2, product.getProductDescription());
+			ps.setString(3, product.getCategory());
+			ps.setString(4, product.getBrand());
+			ps.setDouble(5, product.getPrice());
+			ps.setInt(6, product.getQuantity());
+			ps.setDate(7, java.sql.Date.valueOf(LocalDate.now()));
 			ps.setString(8, appSession.getLoggedInUser().getCreatedBy());
 			ps.setInt(9, product.getProductId());
-	        return ps.executeUpdate() > 0;
-	    }
+			return ps.executeUpdate() > 0;
+		}
 	}
 }
