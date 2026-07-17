@@ -6,30 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.ecom.Util.DBConnection;
+
 public class OrderRepo {
 
-	public PreparedStatement ps;
-	public Connection connection;
-
-	{
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/e_commerce",
-					"root",
-					"strong@15104961");
-
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	public int saveOrder(Order order)//save order
 	        throws FailedToCreateOrderException {
 
 	    String sql = "INSERT INTO orders (customer_id,total_amount,order_status,created_date,created_by,modified_date,modified_by) VALUES (?,?,?,?,?,?,?)";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 	        ps.setString(1, order.getUserId());
 	        ps.setDouble(2, order.getTotalAmount());
@@ -65,7 +52,8 @@ public class OrderRepo {
 
 	    String sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?,?,?,?)";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setInt(1, item.getOrderId());
 	        ps.setInt(2, item.getProductId());
@@ -91,7 +79,8 @@ public class OrderRepo {
 
 	    String sql = "SELECT quantity FROM product WHERE product_id=?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setInt(1, productId);
 
@@ -105,18 +94,18 @@ public class OrderRepo {
 	                return true;
 	            } else {
 	                throw new InsufficientStockException(
-	                        "Only " + availableStock + " items available in stock.");
+	                        "Product " + productId + " Only has " + availableStock + " Qty Available In Stock.");
 	            }
 
 	        } else {
 
-	            throw new InsufficientStockException("Product not found.");
+	            throw new InsufficientStockException("Product Not Found.");
 
 	        }
 
 	    } catch (SQLException e) {
 
-	        throw new InsufficientStockException("Unable to verify stock.", e);
+	        throw new InsufficientStockException("Unable To Verify Stock.", e);
 
 	    }
 
@@ -126,7 +115,8 @@ public class OrderRepo {
 
 	    String sql = "UPDATE product SET quantity = quantity - ? WHERE product_id = ?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setInt(1, quantity);
 	        ps.setInt(2, productId);
@@ -151,7 +141,8 @@ public class OrderRepo {
 
 	    String sql = "DELETE FROM cart WHERE customer_id = ?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setString(1, customerId);
 
@@ -164,7 +155,8 @@ public class OrderRepo {
 
 	    String sql = "SELECT * FROM orders WHERE customer_id=?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setString(1, customerId);
 
@@ -195,7 +187,8 @@ public class OrderRepo {
 	    String sql =
 	            "UPDATE orders SET order_status=?,modified_date=? WHERE order_id=?";
 
-	    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+	    try (Connection connection = DBConnection.getConnection();
+	    		PreparedStatement ps = connection.prepareStatement(sql)) {
 
 	        ps.setString(1, OrderStatus.CANCELLED);
 	        ps.setDate(2, java.sql.Date.valueOf(java.time.LocalDate.now()));

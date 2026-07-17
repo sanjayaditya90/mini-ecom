@@ -5,10 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import java.time.LocalDateTime;
 
-/**
- * Unit Tests for CartService and Cart Classes
- * Tests all cart-related business logic methods
- */
 public class CartServiceTest {
 
     private Cart testCart;

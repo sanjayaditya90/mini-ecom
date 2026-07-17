@@ -73,7 +73,7 @@ public class OrderService {
 
 	    } catch (Exception e) {
 
-	        throw new FailedToCreateOrderException("Unable to place order.", e);
+	        throw new FailedToCreateOrderException("Unable to place order. "+ e.getMessage());
 
 	    }
 	}

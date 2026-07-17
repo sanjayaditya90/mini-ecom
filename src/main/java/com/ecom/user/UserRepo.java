@@ -16,7 +16,7 @@ public class UserRepo {
 				+ "(user_name, password, first_name, last_name, email, phone_no, age, created_date, created_by, modified_date, modified_by, user_type, address) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (Connection connection = DBConnection.getConnection();
+		try (Connection connection = DBConnection.getConnection(); 
 				PreparedStatement ps = connection.prepareStatement(saveUserSql)) {
 
 			ps.setString(1, user.getUserName());
